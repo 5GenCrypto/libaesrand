@@ -1,15 +1,37 @@
 #include "aesrand.h"
 
+#include <sys/stat.h>
+#include <fcntl.h>
+
 #define AES_ALGORITHM EVP_aes_256_ctr()
+
+#ifndef RANDFILE
+#  define RANDFILE "/dev/urandom"
+#endif
 
 int X = 0;
 int Y = 0;
 
 int VERBOSE = 0;
 
-void aes_randinit(aes_randstate_t state) {
-  char *default_seed = "12345678901234567890123456789012";
-  aes_randinit_seed(state, default_seed, NULL);
+int aes_randinit(aes_randstate_t rng) {
+    int file;
+    if ((file = open(RANDFILE, O_RDONLY)) == -1) {
+        fprintf(stderr, "Error opening %s\n", RANDFILE);
+        return 1;
+    } else {
+        char seed[8];
+        if (read(file, seed, 16) == -1) {
+            fprintf(stderr, "Error reading from %s\n", RANDFILE);
+            close(file);
+            return 1;
+        } else {
+            aes_randinit_seed(rng, seed, NULL);
+        }
+    }
+    if (file != -1)
+        close(file);
+    return 0;
 }
 
 void aes_randinit_seed(aes_randstate_t state, char *seed, char *additional) {
