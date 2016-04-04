@@ -20,7 +20,7 @@ int aes_randinit(aes_randstate_t rng) {
         fprintf(stderr, "Error opening %s\n", RANDFILE);
         return 1;
     } else {
-        char seed[8];
+        char seed[16];
         if (read(file, seed, 16) == -1) {
             fprintf(stderr, "Error reading from %s\n", RANDFILE);
             close(file);
