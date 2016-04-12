@@ -14,6 +14,10 @@
 #include <openssl/evp.h>
 #include <openssl/sha.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct _aes_randstate_struct {
   char aes_init;
   unsigned long ctr;
@@ -37,5 +41,9 @@ void mpfr_urandomb_aes(mpfr_t rop, aes_randstate_t state);
 void mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n);
 void mpz_urandomm_aes(mpz_t rop, aes_randstate_t state, const mpz_t n);
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _AESRAND_H_ */
