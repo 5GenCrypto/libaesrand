@@ -1,4 +1,3 @@
-AC_PREREQ(2.65)
 AC_INIT([libaesrand], [0.1.0], [bcarmer@gmail.com])
 
 AC_CONFIG_HEADERS([config.h])
