@@ -42,6 +42,10 @@ AC_SEARCH_LIBS(_fmpz_clear_mpz,flint)
 if test "x$ac_cv_search__fmpz_clear_mpz" = "xno"; then
   AC_MSG_ERROR([libflint not found])
 fi
+AC_SEARCH_LIBS(mpfr_init2,mpfr)
+if test "x$ac_cv_search_mpfr_init2" = "xno"; then
+  AC_MSG_ERROR([libmpfr not found])
+fi
 
 AC_FUNC_MALLOC
 
