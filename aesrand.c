@@ -139,7 +139,7 @@ void mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n)
         mp_bitcnt_t outlen = 0;
 
         int in_size = nb;
-        unsigned char in[in_size];
+        unsigned char *in = malloc(in_size);
         memset(in, 0, in_size);
 
         while(outlen < nb) {
@@ -155,6 +155,7 @@ void mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n)
         if(outlen > nb) {
             outlen = nb; // we will only use nb bytes
         }
+        free(in);
 
         mp_bitcnt_t true_len = outlen + 4;
         mp_bitcnt_t bytelen = outlen;
