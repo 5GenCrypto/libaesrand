@@ -8,7 +8,6 @@ mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n)
         const mp_bitcnt_t nb = n/8+1; // number of bytes
         unsigned char *output;
         mp_bitcnt_t outlen = 0;
-        int final_len = 0;
 
         // update the internal counter, works at most 2^64 times
         memcpy(state->iv, &state->ctr, sizeof(state->ctr));
@@ -21,17 +20,19 @@ mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n)
         {
             unsigned char *in;
             const int in_size = nb;
+            int final_len = 0;
 
             in = malloc(in_size);
             memset(in, 0, in_size);
 
             while (outlen < nb) {
                 int buflen = 0;
-                EVP_EncryptUpdate(state->ctx, output+outlen, &buflen, in, in_size);
+                EVP_EncryptUpdate(state->ctx, output + outlen, &buflen, in,
+                                  in_size);
                 state->ctr++;
                 outlen += buflen;
             }
-            EVP_EncryptFinal(state->ctx, output+outlen, &final_len);
+            EVP_EncryptFinal(state->ctx, output + outlen, &final_len);
             outlen += final_len;
 
             if (outlen > nb) {
@@ -42,14 +43,14 @@ mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n)
 
         {
             unsigned char *buf;
-            mp_bitcnt_t true_len = outlen + 4;
+            const mp_bitcnt_t true_len = outlen + 4;
             mp_bitcnt_t bytelen = outlen;
             FILE *fp;
 
             buf = malloc(true_len);
             memset(buf, 0, true_len);
-            memcpy(buf+4, output, outlen);
-            buf[4] >>= ((outlen*8) - (unsigned int) n);
+            memcpy(buf + 4, output, outlen);
+            buf[4] >>= ((outlen * 8) - (unsigned int) n);
 
             for (int i = 3; i >= 0; i--) {
                 buf[i] = (unsigned char) (bytelen % (1 << 8));
