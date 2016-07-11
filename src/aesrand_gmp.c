@@ -8,12 +8,13 @@ mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n)
         const mp_bitcnt_t nb = n/8+1; // number of bytes
         unsigned char *output;
         mp_bitcnt_t outlen = 0;
+        EVP_CIPHER_CTX *ctx;
 
         // update the internal counter, works at most 2^64 times
         memcpy(state->iv, &state->ctr, sizeof(state->ctr));
 
-        state->ctx = EVP_CIPHER_CTX_new();
-        EVP_EncryptInit_ex(state->ctx, AES_ALGORITHM, NULL, state->key, state->iv);
+        ctx = EVP_CIPHER_CTX_new();
+        EVP_EncryptInit_ex(ctx, AES_ALGORITHM, NULL, state->key, state->iv);
 
         output = malloc(2 * (nb + EVP_MAX_IV_LENGTH));
 
@@ -27,12 +28,12 @@ mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n)
 
             while (outlen < nb) {
                 int buflen = 0;
-                EVP_EncryptUpdate(state->ctx, output + outlen, &buflen, in,
+                EVP_EncryptUpdate(ctx, output + outlen, &buflen, in,
                                   in_size);
                 state->ctr++;
                 outlen += buflen;
             }
-            EVP_EncryptFinal(state->ctx, output + outlen, &final_len);
+            EVP_EncryptFinal(ctx, output + outlen, &final_len);
             outlen += final_len;
 
             if (outlen > nb) {
@@ -73,8 +74,8 @@ mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n)
 
         free(output);
 
-        EVP_CIPHER_CTX_cleanup(state->ctx);
-        free(state->ctx);
+        EVP_CIPHER_CTX_cleanup(ctx);
+        free(ctx);
     }
 }
 

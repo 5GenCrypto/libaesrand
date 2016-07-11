@@ -17,7 +17,6 @@ extern "C" {
 struct _aes_randstate_struct {
   char aes_init;
   unsigned long ctr;
-  EVP_CIPHER_CTX *ctx;
   unsigned char key[SHA256_DIGEST_LENGTH];
   unsigned char *iv;
 };
