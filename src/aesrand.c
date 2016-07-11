@@ -7,12 +7,9 @@
 #  define RANDFILE "/dev/urandom"
 #endif
 
-int X = 0;
-int Y = 0;
-
-int VERBOSE = 0;
-
-int aes_randinit(aes_randstate_t rng) {
+int
+aes_randinit(aes_randstate_t rng)
+{
     int file;
     if ((file = open(RANDFILE, O_RDONLY)) == -1) {
         fprintf(stderr, "Error opening %s\n", RANDFILE);
@@ -32,26 +29,32 @@ int aes_randinit(aes_randstate_t rng) {
     return 0;
 }
 
-void aes_randinit_seed(aes_randstate_t state, char *seed, char *additional) {
-  if(additional == NULL) {
-    additional = "";
-  }
-  aes_randinit_seedn(state, seed, strlen(seed), additional, strlen(additional));
+void
+aes_randinit_seed(aes_randstate_t state, char *seed, char *additional)
+{
+    if(additional == NULL) {
+        additional = "";
+    }
+    aes_randinit_seedn(state, seed, strlen(seed), additional, strlen(additional));
 }
 
-void aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_len, char *additional, size_t additional_len) {
-  state->aes_init = 1;
-  state->ctr = 0;
-  state->iv = malloc(EVP_CIPHER_iv_length(AES_ALGORITHM));
-  memset(state->iv, 0, EVP_CIPHER_iv_length(AES_ALGORITHM));
+void
+aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_len, char *additional, size_t additional_len)
+{
+    state->aes_init = 1;
+    state->ctr = 0;
+    state->iv = malloc(EVP_CIPHER_iv_length(AES_ALGORITHM));
+    memset(state->iv, 0, EVP_CIPHER_iv_length(AES_ALGORITHM));
 
-  SHA256_CTX sha256;
-  SHA256_Init(&sha256);
-  SHA256_Update(&sha256, seed, seed_len);
-  SHA256_Update(&sha256, additional, additional_len);
-  SHA256_Final(state->key, &sha256);
+    SHA256_CTX sha256;
+    SHA256_Init(&sha256);
+    SHA256_Update(&sha256, seed, seed_len);
+    SHA256_Update(&sha256, additional, additional_len);
+    SHA256_Final(state->key, &sha256);
 }
 
-void aes_randclear(aes_randstate_t state) {
-  free(state->iv);
+void
+aes_randclear(aes_randstate_t state)
+{
+    free(state->iv);
 }
