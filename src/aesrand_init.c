@@ -1,5 +1,10 @@
 #include "aesrand.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <openssl/evp.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 

@@ -1,5 +1,11 @@
 #include "aesrand_gmp.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <openssl/evp.h>
+
 void
 mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n)
 {
