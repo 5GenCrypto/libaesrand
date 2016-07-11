@@ -7,10 +7,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <gmp.h>
-#include <mpfr.h>
-#include <flint/fmpz_poly.h>
-#include <flint/fmpz_mod_poly.h>
 #include <openssl/evp.h>
 #include <openssl/sha.h>
 
@@ -26,21 +22,14 @@ struct _aes_randstate_struct {
   unsigned char *iv;
 };
 
+#define AES_ALGORITHM EVP_aes_256_ctr()
+
 typedef struct _aes_randstate_struct aes_randstate_t[1];
 
 int  aes_randinit(aes_randstate_t state); // seed from /dev/urandom
 void aes_randinit_seed(aes_randstate_t state, char *seed, char *additional);
 void aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_size, char *additional, size_t additional_size);
 void aes_randclear(aes_randstate_t state);
-
-void fmpz_mod_poly_randtest_aes(fmpz_mod_poly_t f, aes_randstate_t state,
-    slong len);
-void fmpz_randm_aes(fmpz_t f, aes_randstate_t state, const fmpz_t m);
-void fmpz_randbits_aes(fmpz_t out, aes_randstate_t state, const mp_bitcnt_t bits);
-void mpfr_urandomb_aes(mpfr_t rop, aes_randstate_t state);
-void mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n);
-void mpz_urandomm_aes(mpz_t rop, aes_randstate_t state, const mpz_t n);
-
 
 #ifdef __cplusplus
 }
