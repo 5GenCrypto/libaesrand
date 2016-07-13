@@ -7,7 +7,6 @@ struct _aes_randstate_struct {
     char aes_init;
     unsigned long ctr;
     unsigned char key[SHA256_DIGEST_LENGTH];
-    unsigned char *iv;
 };
 
 typedef struct _aes_randstate_struct aes_randstate_t[1];

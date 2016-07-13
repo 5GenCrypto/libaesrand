@@ -51,8 +51,6 @@ aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_len,
 
     state->aes_init = 1;
     state->ctr = 0;
-    state->iv = malloc(EVP_CIPHER_iv_length(AES_ALGORITHM));
-    memset(state->iv, 0, EVP_CIPHER_iv_length(AES_ALGORITHM));
 
     SHA256_Init(&sha256);
     SHA256_Update(&sha256, seed, seed_len);
@@ -63,5 +61,4 @@ aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_len,
 void
 aes_randclear(aes_randstate_t state)
 {
-    free(state->iv);
 }

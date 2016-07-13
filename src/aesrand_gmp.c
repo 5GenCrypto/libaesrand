@@ -19,23 +19,27 @@ mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n)
 
     {
         unsigned char *in;
+        unsigned char *iv;
         const int in_size = nb;
         int final_len = 0;
 
         in = malloc(in_size);
         memset(in, 0, in_size);
 
+        iv = malloc(EVP_CIPHER_iv_length(AES_ALGORITHM));
+        memset(iv, 0, EVP_CIPHER_iv_length(AES_ALGORITHM));
+
 #pragma omp critical
         {
-            // update the internal counter, works at most 2^64 times
-            memcpy(state->iv, &state->ctr, sizeof(state->ctr));
-            EVP_EncryptInit_ex(ctx, AES_ALGORITHM, NULL, state->key, state->iv);
-            while (outlen < nb) {
-                int buflen = 0;
-                EVP_EncryptUpdate(ctx, output + outlen, &buflen, in, in_size);
-                state->ctr++;
-                outlen += buflen;
-            }
+            memcpy(iv, &state->ctr, sizeof(state->ctr));
+            state->ctr++;
+        }
+
+        EVP_EncryptInit_ex(ctx, AES_ALGORITHM, NULL, state->key, iv);
+        while (outlen < nb) {
+            int buflen = 0;
+            EVP_EncryptUpdate(ctx, output + outlen, &buflen, in, in_size);
+            outlen += buflen;
         }
 
         EVP_EncryptFinal(ctx, output + outlen, &final_len);
@@ -45,6 +49,7 @@ mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n)
             outlen = nb; // we will only use nb bytes
         }
         free(in);
+        free(iv);
     }
 
     {
