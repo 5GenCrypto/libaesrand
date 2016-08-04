@@ -47,11 +47,11 @@ aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_len,
     SHA256_Update(&sha256, additional, additional_len);
     SHA256_Final(state->key, &sha256);
 
-    printf("seed: ");
-    for (size_t i = 0; i < seed_len; ++i) {
-        printf("0x%02x, ", (unsigned char) seed[i]);
-    }
-    printf("\n");
+    /* printf("seed: "); */
+    /* for (size_t i = 0; i < seed_len; ++i) { */
+    /*     printf("0x%02x, ", (unsigned char) seed[i]); */
+    /* } */
+    /* printf("\n"); */
 }
 
 void
