@@ -7,10 +7,11 @@
 extern "C" {
 #endif
 
-#include "aesrand_init.h"
-#include "aesrand_gmp.h"
-#include "aesrand_flint.h"
-#include "aesrand_mpfr.h"
+#include <aesrand/aesrand_init.h>
+#include <aesrand/aesrand_buf.h>
+#include <aesrand/aesrand_gmp.h>
+#include <aesrand/aesrand_flint.h>
+#include <aesrand/aesrand_mpfr.h>
 
 #ifdef __cplusplus
 }
