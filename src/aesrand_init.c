@@ -1,4 +1,4 @@
-#include "aesrand.h"
+#include "aesrand_init.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,4 +51,48 @@ aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_len,
 void
 aes_randclear(aes_randstate_t state __attribute__ ((unused)))
 {
+}
+
+int
+aes_randstate_fwrite(aes_randstate_t state, FILE *fp)
+{
+    fwrite(&state->aes_init, sizeof(state->aes_init), 1, fp);
+    fwrite(&state->ctr, sizeof(state->ctr), 1, fp);
+    fwrite(state->key, sizeof(state->key), 1, fp);
+    return 0;
+}
+
+int
+aes_randstate_fread(aes_randstate_t state, FILE *fp)
+{
+    fread(&state->aes_init, sizeof(state->aes_init), 1, fp);
+    fread(&state->ctr, sizeof(state->ctr), 1, fp);
+    fread(state->key, sizeof(state->key), 1, fp);
+    return 0;
+}
+
+int
+aes_randstate_write(aes_randstate_t state, const char *fname)
+{
+    FILE *f;
+    if ((f = fopen(fname, "w")) == NULL) {
+        perror(fname);
+        return 1;
+    }
+    (void) aes_randstate_fwrite(state, f);
+    fclose(f);
+    return 0;
+}
+
+int
+aes_randstate_read(aes_randstate_t state, const char *fname)
+{
+    FILE *f;
+    if ((f = fopen(fname, "r")) == NULL) {
+        perror(fname);
+        return 1;
+    }
+    (void) aes_randstate_fread(state, f);
+    fclose(f);
+    return 0;
 }
