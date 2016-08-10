@@ -1,8 +1,8 @@
 AC_INIT([libaesrand], [0.1.0], [bcarmer@gmail.com])
 
-AC_CONFIG_HEADERS([src/config.h])
+AC_CONFIG_HEADERS([aesrand/config.h])
 
-AC_CONFIG_SRCDIR([src])
+AC_CONFIG_SRCDIR([aesrand])
 AC_CONFIG_AUX_DIR([build/autoconf])
 AC_CONFIG_MACRO_DIR([build/autoconf])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
@@ -49,6 +49,6 @@ fi
 
 AC_FUNC_MALLOC
 
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile aesrand/Makefile])
 
 AC_OUTPUT
