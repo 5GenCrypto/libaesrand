@@ -10,4 +10,15 @@ stamp-h1
 *.o
 *.log
 *.status
-
+*.in
+*.m4
+config.h
+configure
+ar-lib
+compile
+config.guess
+config.sub
+depcomp
+install-sh
+ltmain.sh
+missing
