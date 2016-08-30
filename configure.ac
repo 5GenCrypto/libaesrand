@@ -49,6 +49,6 @@ fi
 
 AC_FUNC_MALLOC
 
-AC_CONFIG_FILES([Makefile aesrand/Makefile])
+AC_CONFIG_FILES([Makefile aesrand/Makefile test/Makefile])
 
 AC_OUTPUT
