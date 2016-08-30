@@ -20,11 +20,8 @@ random_aes(aes_randstate_t state, size_t *n)
         const int in_size = nb;
         int final_len = 0;
 
-        in = malloc(in_size);
-        memset(in, 0, in_size);
-
-        iv = malloc(EVP_CIPHER_iv_length(AES_ALGORITHM));
-        memset(iv, 0, EVP_CIPHER_iv_length(AES_ALGORITHM));
+        in = calloc(in_size, sizeof(unsigned char));
+        iv = calloc(EVP_CIPHER_iv_length(AES_ALGORITHM), sizeof(unsigned char));
 
 #pragma omp critical
         {
@@ -49,12 +46,12 @@ random_aes(aes_randstate_t state, size_t *n)
         free(iv);
     }
 
+    /* Convert to format amenable by mpz_inp_raw */
     {
         const size_t true_len = outlen + 4;
         size_t bytelen = outlen;
 
-        buf = malloc(true_len);
-        memset(buf, 0, true_len);
+        buf = calloc(true_len, sizeof(unsigned char));
         memcpy(buf + 4, output, outlen);
         buf[4] >>= ((outlen * 8) - (unsigned int) *n);
 
