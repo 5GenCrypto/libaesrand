@@ -15,19 +15,19 @@ main(void)
 {
     aes_randstate_t rng;
     unsigned char *buf;
-    size_t nb;
+    size_t nbits, nbytes;
 
     if (aes_randinit(rng) == 1)
         return 1;
 
-    nb = 64;
-    buf = random_aes(rng, &nb);
-    print_buf(buf, nb);
+    nbits = 64;
+    buf = random_aes(rng, nbits, &nbytes);
+    print_buf(buf, nbytes);
     free(buf);
 
-    nb = 64;
-    buf = random_aes(rng, &nb);
-    print_buf(buf, nb);
+    nbits = 64;
+    buf = random_aes(rng, nbits, &nbytes);
+    print_buf(buf, nbytes);
     free(buf);
     
     return 0;

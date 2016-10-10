@@ -4,10 +4,10 @@
 #include <openssl/evp.h>
 
 unsigned char *
-random_aes(aes_randstate_t state, size_t *n)
+random_aes(aes_randstate_t state, size_t nbits, size_t *len)
 {
-    const size_t nbytes = *n / 8 + 1;
-    unsigned char *output, *buf;
+    const size_t nbytes = nbits / 8 + 1;
+    unsigned char *output;
     size_t outlen = 0;
     EVP_CIPHER_CTX *ctx;
 
@@ -47,26 +47,9 @@ random_aes(aes_randstate_t state, size_t *n)
         free(iv);
     }
 
-    /* Convert to format amenable by mpz_inp_raw */
-    {
-        const size_t true_len = outlen + 4;
-        size_t bytelen = outlen;
-
-        buf = calloc(true_len, sizeof(unsigned char));
-        memcpy(buf + 4, output, outlen);
-        buf[4] >>= ((outlen * 8) - (unsigned int) *n);
-
-        for (int i = 3; i >= 0; i--) {
-            buf[i] = (unsigned char) (bytelen % (1 << 8));
-            bytelen /= (1 << 8);
-        }
-
-        free(output);
-        *n = true_len;
-    }
-
     EVP_CIPHER_CTX_cleanup(ctx);
     free(ctx);
 
-    return buf;
+    *len = nbytes;
+    return output;
 }
