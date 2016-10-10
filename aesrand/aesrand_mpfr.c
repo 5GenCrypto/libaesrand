@@ -1,6 +1,8 @@
 #include "aesrand_mpfr.h"
 #include "aesrand_gmp.h"
 
+#include "config.h"
+
 #ifdef AESRAND_HAVE_MPFR
 
 int

@@ -47,13 +47,14 @@ AC_CHECK_HEADERS([omp.h])
 AC_SEARCH_LIBS(__gmpz_init, gmp, [], AC_MSG_ERROR([libgmp not found]))
 if test "x$enable_flint" = x"yes"; then
   AC_SEARCH_LIBS(_fmpz_clear_mpz, flint, [], AC_MSG_ERROR([libflint not found]))
+  AC_DEFINE(AESRAND_HAVE_FLINT,1,[Define whether flint is enabled])
   AC_SUBST(AESRAND_FLINT_INCLUDE, ["#include \"aesrand/aesrand_flint.h\""])
 else
   AC_SUBST(AESRAND_FLINT_INCLUDE, [""])
 fi
 if test "x$enable_mpfr" = x"yes"; then
   AC_SEARCH_LIBS(mpfr_init2, mpfr, [], AC_MSG_ERROR([libmpfr not found]))
-  AC_DEFINE(AESRAND_HAVE_MPRF,1,[Define whether mpfr is enabled])
+  AC_DEFINE(AESRAND_HAVE_MPFR,1,[Define whether mpfr is enabled])
   AC_SUBST(AESRAND_MPFR_INCLUDE, ["#include \"aesrand/aesrand_mpfr.h\""])
 else
 AC_SUBST(AESRAND_MPFR_INCLUDE, [""])
