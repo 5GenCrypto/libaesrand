@@ -29,6 +29,7 @@ random_aes(aes_randstate_t state, size_t *n)
             state->ctr++;
         }
 
+        /* Compute E_K(0 || 0 || ...) */
         EVP_EncryptInit_ex(ctx, AES_ALGORITHM, NULL, state->key, iv);
         while (outlen < nbytes) {
             int buflen = 0;
