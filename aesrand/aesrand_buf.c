@@ -6,18 +6,18 @@
 unsigned char *
 random_aes(aes_randstate_t state, size_t *n)
 {
-    const size_t nb = *n / 8 + 1;
+    const size_t nbytes = *n / 8 + 1;
     unsigned char *output, *buf;
     size_t outlen = 0;
     EVP_CIPHER_CTX *ctx;
 
     ctx = EVP_CIPHER_CTX_new();
-    output = malloc(2 * (nb + EVP_MAX_IV_LENGTH));
+    output = malloc(2 * (nbytes + EVP_MAX_IV_LENGTH));
 
     {
         unsigned char *in;
         unsigned char *iv;
-        const int in_size = nb;
+        const int in_size = nbytes;
         int final_len = 0;
 
         in = calloc(in_size, sizeof(unsigned char));
@@ -30,7 +30,7 @@ random_aes(aes_randstate_t state, size_t *n)
         }
 
         EVP_EncryptInit_ex(ctx, AES_ALGORITHM, NULL, state->key, iv);
-        while (outlen < nb) {
+        while (outlen < nbytes) {
             int buflen = 0;
             EVP_EncryptUpdate(ctx, output + outlen, &buflen, in, in_size);
             outlen += buflen;
@@ -39,8 +39,8 @@ random_aes(aes_randstate_t state, size_t *n)
         EVP_EncryptFinal(ctx, output + outlen, &final_len);
         outlen += final_len;
 
-        if (outlen > nb) {
-            outlen = nb; // we will only use nb bytes
+        if (outlen > nbytes) {
+            outlen = nbytes; // we will only use nbytes bytes
         }
         free(in);
         free(iv);
