@@ -1,6 +1,8 @@
 #include "aesrand_flint.h"
 #include "aesrand_gmp.h"
 
+#ifdef AESRAND_HAVE_FLINT
+
 int
 fmpz_mod_poly_randtest_aes(fmpz_mod_poly_t f, aes_randstate_t state, slong len)
 {
@@ -48,4 +50,4 @@ fmpz_randbits_aes(fmpz_t out, aes_randstate_t state, mp_bitcnt_t bits)
     return ret;
 }
 
-
+#endif
