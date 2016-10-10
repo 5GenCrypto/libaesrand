@@ -1,4 +1,4 @@
-#include <aesrand.h>
+#include "aesrand.h"
 
 static void
 print_buf(unsigned char *buf, size_t size)
@@ -29,6 +29,15 @@ main(void)
     buf = random_aes(rng, nbits, &nbytes);
     print_buf(buf, nbytes);
     free(buf);
+
+    {
+        mpz_t rop;
+        mpz_init(rop);
+        if (mpz_urandomb_aes(rop, rng, 128) == AESRAND_ERR)
+            return 1;
+        gmp_printf("%Zd\n", rop);
+    }
+
     
     return 0;
 }

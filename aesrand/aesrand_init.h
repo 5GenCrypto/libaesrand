@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <openssl/sha.h>
 
+#define AESRAND_OK  0
+#define AESRAND_ERR (-1)
+
 struct _aes_randstate_struct {
     char aes_init;
     unsigned long ctr;

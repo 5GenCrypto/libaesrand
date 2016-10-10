@@ -4,7 +4,7 @@
 #include "aesrand_init.h"
 #include <gmp.h>
 
-void mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n);
-void mpz_urandomm_aes(mpz_t rop, aes_randstate_t state, const mpz_t n);
+int mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n);
+int mpz_urandomm_aes(mpz_t rop, aes_randstate_t state, const mpz_t n);
 
 #endif

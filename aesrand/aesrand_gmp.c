@@ -7,50 +7,51 @@
 #include <string.h>
 #include <openssl/evp.h>
 
-void
-mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n)
+int
+mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t nbits)
 {
-    unsigned char *buf;
+    unsigned char *rand, *buf;
     FILE *fp;
-    size_t nbytes;
+    size_t nbytes, true_len;
 
-    buf = random_aes(state, n, &nbytes);
+    rand = random_aes(state, nbits, &nbytes);
+
+    true_len = nbytes + 4;
 
     /* Convert to format amenable by mpz_inp_raw */
-    {
-        const size_t true_len = nbytes + 4;
-        size_t bytelen = nbytes;
+    buf = calloc(true_len, sizeof(unsigned char));
+    memcpy(buf + 4, rand, nbytes);
+    buf[4] >>= ((nbytes * 8) - (unsigned int) nbits);
 
-        buf = calloc(true_len, sizeof(unsigned char));
-        memcpy(buf + 4, buf, nbytes);
-        buf[4] >>= ((nbytes * 8) - (unsigned int) n);
-
-        for (int i = 3; i >= 0; i--) {
-            buf[i] = (unsigned char) (bytelen % (1 << 8));
-            bytelen /= (1 << 8);
-        }
+    for (int i = 3; i >= 0; i--) {
+        buf[i] = (unsigned char) (nbytes % (1 << 8));
+        nbytes /= (1 << 8);
     }
 
-    fp = fmemopen(buf, nbytes, "rb");
+    fp = fmemopen(buf, true_len, "rb");
     if (!fp) {
-        printf("Error in generating randomness.\n");
+        fprintf(stderr, "Error in generating randomness.\n");
+        return AESRAND_ERR;
     }
     if (mpz_inp_raw(rop, fp) == 0) {
-        printf("Error in parsing randomness.\n");
+        fprintf(stderr, "Error in parsing randomness.\n");
+        return AESRAND_ERR;
     }
     fclose(fp);
     free(buf);
+    return AESRAND_OK;
 }
 
-void
+int
 mpz_urandomm_aes(mpz_t rop, aes_randstate_t state, const mpz_t n)
 {
     unsigned long size = mpz_sizeinbase(n, 2);
 
     while (1) {
-        mpz_urandomb_aes(rop, state, size);
+        if (mpz_urandomb_aes(rop, state, size) == AESRAND_ERR)
+            return AESRAND_ERR;
         if (mpz_cmp(rop, n) < 0) {
-            break;
+            return AESRAND_OK;
         }
     }
 }
