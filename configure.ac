@@ -1,6 +1,6 @@
 AC_INIT([libaesrand], [0.1.0], [bcarmer@gmail.com])
 
-AC_CONFIG_HEADERS([aesrand/config.h])
+AC_CONFIG_HEADERS([aesrand/aesrand_config.h])
 
 AC_CONFIG_SRCDIR([aesrand])
 AC_CONFIG_AUX_DIR([build/autoconf])
@@ -15,7 +15,17 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
-AC_ARG_ENABLE(debug,        [  --enable-debug          Enable assert() statements for debugging.], [enable_debug=yes])
+AC_ARG_ENABLE(debug,
+[  --enable-debug          enable debugging],
+[], [enable_debug=no])
+
+AC_ARG_ENABLE(flint,
+[  --disable-flint         do not compile flint support],
+[], [enable_flint=yes])
+
+AC_ARG_ENABLE(mpfr,
+[AS_HELP_STRING([--disable-mpfr], [do not compile mpfr support])],
+[], [enable_mpfr=yes])
 
 CFLAGS=                         dnl get rid of default -g -O2
 COMMON_CFLAGS="-Wall -Wformat -Wformat-security -Wextra -Wunused \
@@ -34,17 +44,14 @@ AC_SUBST(EXTRA_CFLAGS)
 
 AC_CHECK_HEADERS([omp.h])
 
-AC_SEARCH_LIBS(__gmpz_init,gmp)
-if test "x$ac_cv_search___gmpz_init" = "xno"; then
-  AC_MSG_ERROR([libgmp not found])
+AC_SEARCH_LIBS(__gmpz_init, gmp, [], AC_MSG_ERROR([libgmp not found]))
+if test "x$enable_flint" = x"yes"; then
+  AC_SEARCH_LIBS(_fmpz_clear_mpz, flint, [], AC_MSG_ERROR([libflint not found]))
+  AC_DEFINE(AESRAND_HAVE_FLINT,1,[Define whether flint is enabled])
 fi
-AC_SEARCH_LIBS(_fmpz_clear_mpz,flint)
-if test "x$ac_cv_search__fmpz_clear_mpz" = "xno"; then
-  AC_MSG_ERROR([libflint not found])
-fi
-AC_SEARCH_LIBS(mpfr_init2,mpfr)
-if test "x$ac_cv_search_mpfr_init2" = "xno"; then
-  AC_MSG_ERROR([libmpfr not found])
+if test "x$enable_mpfr" = x"yes"; then
+  AC_SEARCH_LIBS(mpfr_init2, mpfr, [], AC_MSG_ERROR([libmpfr not found]))
+  AC_DEFINE(AESRAND_HAVE_MPRF,1,[Define whether mpfr is enabled])
 fi
 
 AC_FUNC_MALLOC
