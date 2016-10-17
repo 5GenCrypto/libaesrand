@@ -22,6 +22,7 @@ mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t nbits)
     buf = calloc(true_len, sizeof(unsigned char));
     memcpy(buf + 4, rand, nbytes);
     buf[4] >>= ((nbytes * 8) - (unsigned int) nbits);
+    free(rand);
 
     for (int i = 3; i >= 0; i--) {
         buf[i] = (unsigned char) (nbytes % (1 << 8));
