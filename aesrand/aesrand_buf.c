@@ -8,20 +8,19 @@ random_aes(aes_randstate_t state, size_t nbits, size_t *len)
 {
     const size_t nbytes = nbits / 8 + 1;
     unsigned char *output;
-    size_t outlen = 0;
     EVP_CIPHER_CTX *ctx;
 
     ctx = EVP_CIPHER_CTX_new();
-    output = malloc(2 * (nbytes + EVP_MAX_IV_LENGTH));
+    output = malloc(nbytes + EVP_MAX_IV_LENGTH);
 
     {
-        unsigned char *in;
-        unsigned char *iv;
-        const int in_size = nbytes;
+        unsigned char in[nbytes];
+        unsigned char iv[EVP_CIPHER_iv_length(AES_ALGORITHM)];
         int final_len = 0;
+        size_t outlen = 0;
 
-        in = calloc(in_size, sizeof(unsigned char));
-        iv = calloc(EVP_CIPHER_iv_length(AES_ALGORITHM), sizeof(unsigned char));
+        memset(in, '\0', nbytes);
+        memset(iv, '\0', EVP_CIPHER_iv_length(AES_ALGORITHM));
 
 #pragma omp critical
         {
@@ -29,11 +28,11 @@ random_aes(aes_randstate_t state, size_t nbits, size_t *len)
             state->ctr++;
         }
 
-        /* Compute E_K(0 || 0 || ...) */
+        /* Compute E(K, CTR, 0 || 0 || ...) */
         EVP_EncryptInit_ex(ctx, AES_ALGORITHM, NULL, state->key, iv);
         while (outlen < nbytes) {
             int buflen = 0;
-            EVP_EncryptUpdate(ctx, output + outlen, &buflen, in, in_size);
+            EVP_EncryptUpdate(ctx, output + outlen, &buflen, in, nbytes);
             outlen += buflen;
         }
 
@@ -43,8 +42,6 @@ random_aes(aes_randstate_t state, size_t nbits, size_t *len)
         if (outlen > nbytes) {
             outlen = nbytes; // we will only use nbytes bytes
         }
-        free(in);
-        free(iv);
     }
 
     EVP_CIPHER_CTX_cleanup(ctx);

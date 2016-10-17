@@ -8,11 +8,9 @@
 int
 fmpz_mod_poly_randtest_aes(fmpz_mod_poly_t f, aes_randstate_t state, slong len)
 {
-    slong i;
-
     fmpz_mod_poly_fit_length(f, len);
 
-    for (i = 0; i < len; i++) {
+    for (slong i = 0; i < len; i++) {
         if (fmpz_randm_aes(f->coeffs + i, state, &(f->p)) == AESRAND_ERR)
             return AESRAND_ERR;
     }

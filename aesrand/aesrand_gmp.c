@@ -10,43 +10,43 @@
 int
 mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t nbits)
 {
-    unsigned char *rand, *buf;
+    unsigned char *rand;
     FILE *fp;
-    size_t nbytes, true_len;
+    size_t nbytes;
 
     rand = random_aes(state, nbits, &nbytes);
 
-    true_len = nbytes + 4;
-
     /* Convert to format amenable by mpz_inp_raw */
-    buf = calloc(true_len, sizeof(unsigned char));
-    memcpy(buf + 4, rand, nbytes);
-    buf[4] >>= ((nbytes * 8) - (unsigned int) nbits);
+    {
+        const size_t true_len = nbytes + 4;
+        unsigned char buf[true_len];
+        memcpy(buf + 4, rand, nbytes);
+        buf[4] >>= ((nbytes * 8) - (unsigned int) nbits);
+
+        for (int i = 3; i >= 0; i--) {
+            buf[i] = (unsigned char) (nbytes % (1 << 8));
+            nbytes /= (1 << 8);
+        }
+
+        fp = fmemopen(buf, true_len, "rb");
+        if (!fp) {
+            fprintf(stderr, "Error in generating randomness.\n");
+            return AESRAND_ERR;
+        }
+        if (mpz_inp_raw(rop, fp) == 0) {
+            fprintf(stderr, "Error in parsing randomness.\n");
+            return AESRAND_ERR;
+        }
+        fclose(fp);
+    }
     free(rand);
-
-    for (int i = 3; i >= 0; i--) {
-        buf[i] = (unsigned char) (nbytes % (1 << 8));
-        nbytes /= (1 << 8);
-    }
-
-    fp = fmemopen(buf, true_len, "rb");
-    if (!fp) {
-        fprintf(stderr, "Error in generating randomness.\n");
-        return AESRAND_ERR;
-    }
-    if (mpz_inp_raw(rop, fp) == 0) {
-        fprintf(stderr, "Error in parsing randomness.\n");
-        return AESRAND_ERR;
-    }
-    fclose(fp);
-    free(buf);
     return AESRAND_OK;
 }
 
 int
 mpz_urandomm_aes(mpz_t rop, aes_randstate_t state, const mpz_t n)
 {
-    unsigned long size = mpz_sizeinbase(n, 2);
+    const unsigned long size = mpz_sizeinbase(n, 2);
 
     while (1) {
         if (mpz_urandomb_aes(rop, state, size) == AESRAND_ERR)
