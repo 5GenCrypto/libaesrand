@@ -40,6 +40,8 @@ main(void)
     start = current_time();
     for (int i = 0; i < NITERS; ++i) {
         buf = random_aes(rng, nbits, &nbytes);
+        if (buf == NULL)
+            return 1;
         free(buf);
     }
     end = current_time();
