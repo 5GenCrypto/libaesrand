@@ -36,6 +36,10 @@ main(void)
 
     nbits = 128;
 
+    buf = random_aes(rng, nbits, &nbytes);
+    print_buf(buf, nbytes);
+    free(buf);
+
     printf("Testing random_aes: ");
     start = current_time();
     for (int i = 0; i < NITERS; ++i) {
@@ -147,6 +151,7 @@ main(void)
     }
     printf("%f s\n", end - start);
 
+    aes_randclear(rng);
     
     return 0;
 }
