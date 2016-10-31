@@ -29,6 +29,7 @@ mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t nbits)
         }
 
         fp = fmemopen(buf, true_len, "rb");
+        setbuf(fp, NULL);       /* Avoid buffering to speed things up */
         if (!fp) {
             fprintf(stderr, "Error in generating randomness.\n");
             return AESRAND_ERR;
