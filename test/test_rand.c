@@ -31,10 +31,14 @@ main(void)
     size_t nbits, nbytes;
     double start, end;
 
-    if (aes_randinit(rng) == 1)
+    if (aes_randinit(rng) == AESRAND_ERR)
         return 1;
 
     nbits = 128;
+
+    buf = random_aes(rng, nbits, &nbytes);
+    print_buf(buf, nbytes);
+    free(buf);
 
     buf = random_aes(rng, nbits, &nbytes);
     print_buf(buf, nbytes);
