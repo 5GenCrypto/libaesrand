@@ -103,6 +103,7 @@ main(void)
         fmpz_t q;
         fmpz_mod_poly_t rop;
         mp_bitcnt_t n = 1 << 13;
+        fmpz_init(q);
         fmpz_randbits_aes(q, rng, 13);
         fmpz_abs(q, q);
         fmpz_fdiv_q_2exp(q, q, n_flog(n,2)+1);
