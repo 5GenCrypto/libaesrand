@@ -6,3 +6,5 @@ check_PROGRAMS = test_rand
 TESTS = $(check_PROGRAMS)
 
 test_rand_SOURCES = test_rand.c
+
+all: $(TESTS)
