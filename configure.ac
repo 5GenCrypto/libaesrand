@@ -31,12 +31,12 @@ CFLAGS=                         dnl get rid of default -g -O2
 COMMON_CFLAGS="-Wall -Wformat -Wformat-security -Wextra -Wunused \
 -Wshadow -Wmissing-prototypes -Wfloat-equal -Wpointer-arith -Wcast-align \
 -Wstrict-prototypes -Wredundant-decls -Wendif-labels -Wcast-qual \
--std=gnu11 -Wpedantic"
+-std=gnu11 -march=native -Wpedantic"
 
 if test "x$enable_debug" = x"yes"; then
   EXTRA_CFLAGS="-O0 -g"
 else
-  EXTRA_CFLAGS="-O3"
+  EXTRA_CFLAGS="-fomit-frame-pointer -O3"
   AC_DEFINE(NDEBUG,1,[Define whether debugging is enabled])
 fi
 AC_SUBST(COMMON_CFLAGS)
