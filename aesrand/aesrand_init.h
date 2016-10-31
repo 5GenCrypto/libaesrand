@@ -2,6 +2,7 @@
 #define _AESRAND_INIT_H_
 
 #include <stdio.h>
+#include <openssl/evp.h>
 #include <openssl/sha.h>
 
 #define AESRAND_OK  0
@@ -11,6 +12,7 @@ struct _aes_randstate_struct {
     char aes_init;
     unsigned long ctr;
     unsigned char key[SHA256_DIGEST_LENGTH];
+    EVP_CIPHER_CTX *ctx;
 };
 
 typedef struct _aes_randstate_struct aes_randstate_t[1];

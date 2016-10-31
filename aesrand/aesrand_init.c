@@ -41,6 +41,7 @@ aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_len,
 
     state->aes_init = 1;
     state->ctr = 0;
+    state->ctx = EVP_CIPHER_CTX_new();
 
     SHA256_Init(&sha256);
     SHA256_Update(&sha256, seed, seed_len);
@@ -49,8 +50,10 @@ aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_len,
 }
 
 void
-aes_randclear(aes_randstate_t state __attribute__ ((unused)))
+aes_randclear(aes_randstate_t state)
 {
+    EVP_CIPHER_CTX_cleanup(state->ctx);
+    free(state->ctx);
 }
 
 int
