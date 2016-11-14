@@ -32,7 +32,7 @@ random_aes(aes_randstate_t state, size_t nbits, size_t *len)
         }
 
         /* Compute E(K, CTR, 0 || 0 || ...) */
-        EVP_EncryptInit_ex(state->ctx, NULL, NULL, state->key, iv);
+        EVP_EncryptInit_ex(state->ctx, NULL, NULL, NULL, iv);
         while (outlen < nbytes) {
             int buflen = 0;
             EVP_EncryptUpdate(state->ctx, output + outlen, &buflen, in, nbytes);

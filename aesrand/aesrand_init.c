@@ -11,6 +11,13 @@
 #  define RANDFILE "/dev/urandom"
 #endif
 
+static inline void
+initialize_ctx(aes_randstate_t state)
+{
+    state->ctx = EVP_CIPHER_CTX_new();
+    EVP_EncryptInit_ex(state->ctx, AES_ALGORITHM, NULL, state->key, NULL);
+}
+
 int
 aes_randinit(aes_randstate_t rng)
 {
@@ -46,8 +53,7 @@ aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_len,
     SHA256_Update(&sha256, additional, additional_len);
     SHA256_Final(state->key, &sha256);
 
-    state->ctx = EVP_CIPHER_CTX_new();
-    EVP_EncryptInit_ex(state->ctx, AES_ALGORITHM, NULL, state->key, NULL);
+    initialize_ctx(state);
 }
 
 void
@@ -72,6 +78,7 @@ aes_randstate_fread(aes_randstate_t state, FILE *fp)
     fread(&state->aes_init, sizeof(state->aes_init), 1, fp);
     fread(&state->ctr, sizeof(state->ctr), 1, fp);
     fread(state->key, sizeof(state->key), 1, fp);
+    initialize_ctx(state);
     return AESRAND_OK;
 }
 
