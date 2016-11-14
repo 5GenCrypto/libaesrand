@@ -13,13 +13,16 @@ mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t nbits)
     unsigned char *rand;
     FILE *fp;
     size_t nbytes;
+    int ret = AESRAND_ERR;
 
     rand = random_aes(state, nbits, &nbytes);
 
     /* Convert to format amenable by mpz_inp_raw */
     {
         const size_t true_len = nbytes + 4;
-        unsigned char buf[true_len];
+        unsigned char *buf;
+        /* nbytes may be huge, so we cannot use stack allocation for buf */
+        buf = calloc(true_len, sizeof(unsigned char));
         memcpy(buf + 4, rand, nbytes);
         buf[4] >>= ((nbytes * 8) - (unsigned int) nbits);
 
@@ -29,19 +32,23 @@ mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t nbits)
         }
 
         fp = fmemopen(buf, true_len, "rb");
-        setbuf(fp, NULL);       /* Avoid buffering to speed things up */
         if (!fp) {
             fprintf(stderr, "Error in generating randomness.\n");
-            return AESRAND_ERR;
+            goto cleanup;
         }
+        setbuf(fp, NULL);       /* Avoid buffering to speed things up */
         if (mpz_inp_raw(rop, fp) == 0) {
             fprintf(stderr, "Error in parsing randomness.\n");
-            return AESRAND_ERR;
+            goto cleanup;
         }
-        fclose(fp);
+        ret = AESRAND_OK;
+    cleanup:
+        free(buf);
+        if (fp)
+            fclose(fp);
     }
     free(rand);
-    return AESRAND_OK;
+    return ret;
 }
 
 int

@@ -17,12 +17,12 @@ random_aes(aes_randstate_t state, size_t nbits, size_t *len)
     assert(EVP_CIPHER_iv_length(AES_ALGORITHM) != 0);
 
     {
-        unsigned char in[nbytes];
         unsigned char iv[EVP_CIPHER_iv_length(AES_ALGORITHM)];
+        unsigned char *in;
         int final_len = 0;
         size_t outlen = 0;
-
-        memset(in, '\0', nbytes);
+        /* nbytes may be huge, so we cannot use stack allocation for buf */
+        in = calloc(nbytes, sizeof(unsigned char));
         memset(iv, '\0', EVP_CIPHER_iv_length(AES_ALGORITHM));
 
 #pragma omp critical
@@ -45,6 +45,8 @@ random_aes(aes_randstate_t state, size_t nbits, size_t *len)
         if (outlen > nbytes) {
             outlen = nbytes; // we will only use nbytes bytes
         }
+
+        free(in);
     }
 
     *len = nbytes;
