@@ -23,9 +23,9 @@ int  aes_randinit(aes_randstate_t state); // seed from /dev/urandom
 void aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_size,
                         char *additional, size_t additional_size);
 void aes_randclear(aes_randstate_t state);
-int  aes_randstate_fwrite(aes_randstate_t state, FILE *fp);
+int  aes_randstate_fwrite(const aes_randstate_t state, FILE *fp);
 int  aes_randstate_fread(aes_randstate_t state, FILE *fp);
-int  aes_randstate_write(aes_randstate_t state, const char *fname);
+int  aes_randstate_write(const aes_randstate_t state, const char *fname);
 int  aes_randstate_read(aes_randstate_t state, const char *fname);
 
 #endif

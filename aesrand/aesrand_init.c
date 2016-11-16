@@ -64,7 +64,7 @@ aes_randclear(aes_randstate_t state)
 }
 
 int
-aes_randstate_fwrite(aes_randstate_t state, FILE *fp)
+aes_randstate_fwrite(const aes_randstate_t state, FILE *fp)
 {
     fwrite(&state->aes_init, sizeof(state->aes_init), 1, fp);
     fwrite(&state->ctr, sizeof(state->ctr), 1, fp);
@@ -83,7 +83,7 @@ aes_randstate_fread(aes_randstate_t state, FILE *fp)
 }
 
 int
-aes_randstate_write(aes_randstate_t state, const char *fname)
+aes_randstate_write(const aes_randstate_t state, const char *fname)
 {
     FILE *f;
     if ((f = fopen(fname, "w")) == NULL) {
