@@ -1,6 +1,7 @@
 .deps/
 .libs/
 autom4te.cache/
+build/
 Makefile
 libtool
 stamp-h1
@@ -22,3 +23,6 @@ depcomp
 install-sh
 ltmain.sh
 missing
+
+aesrand/aesrand.h
+test/test_rand
