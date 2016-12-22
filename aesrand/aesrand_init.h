@@ -11,12 +11,12 @@
 struct _aes_randstate_struct {
     char aes_init;
     unsigned long ctr;
-    unsigned char key[SHA256_DIGEST_LENGTH];
+    unsigned char key[128];
 };
 
 typedef struct _aes_randstate_struct aes_randstate_t[1];
 
-#define AES_ALGORITHM EVP_aes_256_ctr()
+#define AES_ALGORITHM EVP_aes_128_ctr()
 
 int  aes_randinit(aes_randstate_t state); // seed from /dev/urandom
 void aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_size,

@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <openssl/evp.h>
 #include <sys/stat.h>
@@ -37,6 +38,7 @@ aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_len,
                    char *additional, size_t additional_len)
 {
     SHA256_CTX sha256;
+    unsigned char key[SHA256_DIGEST_LENGTH];
 
     state->aes_init = 1;
     state->ctr = 0;
@@ -44,7 +46,8 @@ aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_len,
     SHA256_Init(&sha256);
     SHA256_Update(&sha256, seed, seed_len);
     SHA256_Update(&sha256, additional, additional_len);
-    SHA256_Final(state->key, &sha256);
+    SHA256_Final(key, &sha256);
+    memcpy(state->key, key, sizeof state->key);
 }
 
 void
