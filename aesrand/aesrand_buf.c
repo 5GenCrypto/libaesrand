@@ -44,7 +44,7 @@ random_aes(aes_randstate_t state, size_t nbits, size_t *len)
         *len = nbytes;          /* only use nbytes bytes */
         free(in);
     }
-    EVP_CIPHER_CTX_cleanup(ctx);
+    EVP_CIPHER_CTX_free(ctx);
 
     return out;
 }
