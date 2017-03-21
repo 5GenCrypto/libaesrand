@@ -46,7 +46,7 @@ AC_CHECK_HEADERS([omp.h])
 
 AC_SEARCH_LIBS(__gmpz_init, gmp, [], AC_MSG_ERROR([libgmp not found]))
 if test "x$enable_flint" = x"yes"; then
-  AC_SEARCH_LIBS(_fmpz_clear_mpz, flint, [], AC_MSG_ERROR([libflint not found]))
+  AC_SEARCH_LIBS(fmpz_init, flint, [], AC_MSG_ERROR([libflint not found]))
   AC_DEFINE(AESRAND_HAVE_FLINT,1,[Define whether flint is enabled])
   AC_SUBST(AESRAND_FLINT_INCLUDE, ["#include \"aesrand/aesrand_flint.h\""])
 else
