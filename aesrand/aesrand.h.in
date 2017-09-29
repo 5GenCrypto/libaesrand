@@ -1,0 +1,27 @@
+#ifndef _AESRAND_H_
+#define _AESRAND_H_
+
+#define _GNU_SOURCE
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#cmakedefine AESRAND_HAVE_FLINT
+#cmakedefine AESRAND_HAVE_MPFR
+
+#include <aesrand/aesrand_init.h>
+#include <aesrand/aesrand_buf.h>
+#include <aesrand/aesrand_gmp.h>
+#ifdef AESRAND_HAVE_FLINT
+#include <aesrand/aesrand_flint.h>
+#endif
+#ifdef AESRAND_HAVE_MPFR
+#include <aesrand/aesrand_mpfr.h>
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* _AESRAND_H_ */

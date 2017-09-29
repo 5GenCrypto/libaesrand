@@ -1,10 +1,6 @@
 #include "aesrand_mpfr.h"
 #include "aesrand_gmp.h"
 
-#include "config.h"
-
-#ifdef AESRAND_HAVE_MPFR
-
 int
 mpfr_urandomb_aes(mpfr_t rop, aes_randstate_t state)
 {
@@ -27,5 +23,3 @@ mpfr_urandomb_aes(mpfr_t rop, aes_randstate_t state)
     mpfr_clear(denom);
     return ret;
 }
-
-#endif

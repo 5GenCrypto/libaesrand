@@ -1,4 +1,4 @@
-#include "aesrand.h"
+#include <aesrand/aesrand.h>
 
 #include <sys/time.h>
 
@@ -84,6 +84,7 @@ main(void)
     }
     printf("%f s\n", end - start);
 
+#ifdef AESRAND_HAVE_MPFR
     printf("Testing mpfr_urandomb_aes: ");
     {
         mpfr_t rop;
@@ -97,7 +98,9 @@ main(void)
         mpfr_clear(rop);
     }
     printf("%f s\n", end - start);
+#endif
 
+#ifdef AESRAND_HAVE_FLINT
     printf("Testing fmpz_mod_poly_randtest_aes: ");
     {
         fmpz_t q;
@@ -155,6 +158,7 @@ main(void)
         fmpz_clear(n);
     }
     printf("%f s\n", end - start);
+#endif
 
     aes_randclear(rng);
     
