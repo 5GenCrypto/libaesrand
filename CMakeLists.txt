@@ -61,7 +61,7 @@ install(FILES ${aesrand_HEADERS}
 
 # Test files
 
-add_executable(test_aesrand test/test_rand.c)
+add_executable(test_aesrand test/test_aesrand.c)
 target_include_directories(test_aesrand PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(test_aesrand PRIVATE aesrand gmp)
 if (AESRAND_HAVE_FLINT)
@@ -72,5 +72,4 @@ if (AESRAND_HAVE_MPFR)
 endif (AESRAND_HAVE_MPFR)
 
 enable_testing()
-add_test(NAME test_aesrand
-  COMMAND test_aesrand)
+add_test(NAME test_aesrand COMMAND test_aesrand)
