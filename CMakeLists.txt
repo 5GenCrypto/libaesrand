@@ -48,7 +48,7 @@ if (AESRAND_HAVE_MPFR)
 endif (AESRAND_HAVE_MPFR)
 
 include(FindOpenMP)
-set(CMAKE_C_FLAGS "-Wall -Wextra -Wpedantic -Werror -std=gnu11 -march=native ${OpenMP_C_FLAGS}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wpedantic -Werror -std=gnu11 -march=native ${OpenMP_C_FLAGS}")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -pg -ggdb -O0")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3")
 target_link_libraries(aesrand INTERFACE "${OpenMP_C_FLAGS}")
@@ -57,11 +57,8 @@ configure_file(
   "${PROJECT_SOURCE_DIR}/aesrand/aesrand.h.in" "${PROJECT_SOURCE_DIR}/aesrand/aesrand.h"
   )
 
-install(TARGETS aesrand
-  LIBRARY DESTINATION lib
-  )
-install(FILES ${aesrand_HEADERS}
-  DESTINATION include/aesrand)
+install(TARGETS aesrand LIBRARY DESTINATION lib)
+install(FILES ${aesrand_HEADERS} DESTINATION include/aesrand)
 
 # Test files
 
