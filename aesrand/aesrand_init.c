@@ -68,9 +68,9 @@ aes_randstate_fwrite(const aes_randstate_t state, FILE *fp)
 int
 aes_randstate_fread(aes_randstate_t state, FILE *fp)
 {
-    fread(&state->aes_init, sizeof(state->aes_init), 1, fp);
-    fread(&state->ctr, sizeof(state->ctr), 1, fp);
-    fread(state->key, sizeof(state->key), 1, fp);
+    (void) fread(&state->aes_init, sizeof(state->aes_init), 1, fp);
+    (void) fread(&state->ctr, sizeof(state->ctr), 1, fp);
+    (void) fread(state->key, sizeof(state->key), 1, fp);
     return AESRAND_OK;
 }
 
