@@ -18,10 +18,6 @@ set(aesrand_SOURCES
   aesrand/aesrand_gmp.c
   aesrand/aesrand_init.c
   )
-set(aesrand_HEADERS
-  aesrand/aesrand.h
-  )
-
 if (AESRAND_HAVE_FLINT)
   list(APPEND aesrand_SOURCES aesrand/aesrand_flint.c)
 endif (AESRAND_HAVE_FLINT)
@@ -30,30 +26,27 @@ if (AESRAND_HAVE_MPFR)
 endif (AESRAND_HAVE_MPFR)
 
 add_library(aesrand SHARED ${aesrand_SOURCES})
-target_include_directories(aesrand INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/aesrand>
-  $<INSTALL_INTERFACE:include/aesrand>)
-
-target_link_libraries(aesrand PRIVATE crypto gmp)
+target_link_libraries(aesrand PUBLIC crypto gmp)
 if (AESRAND_HAVE_FLINT)
-  target_link_libraries(aesrand PRIVATE flint)
+  target_link_libraries(aesrand PUBLIC flint)
 endif (AESRAND_HAVE_FLINT)
 if (AESRAND_HAVE_MPFR)
-  target_link_libraries(aesrand PRIVATE mpfr)
+  target_link_libraries(aesrand PUBLIC mpfr)
 endif (AESRAND_HAVE_MPFR)
 
 find_package(OpenMP REQUIRED)
+target_link_libraries(aesrand INTERFACE "${OpenMP_C_FLAGS}")
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wpedantic -Werror -Wno-unused-result -std=gnu11 -march=native ${OpenMP_C_FLAGS}")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -pg -ggdb -O0")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3")
-target_link_libraries(aesrand INTERFACE "${OpenMP_C_FLAGS}")
 
 configure_file(
   "${PROJECT_SOURCE_DIR}/aesrand/aesrand.h.in" "${PROJECT_SOURCE_DIR}/aesrand/aesrand.h"
   )
 
 install(TARGETS aesrand LIBRARY DESTINATION lib)
-install(FILES ${aesrand_HEADERS} DESTINATION include/aesrand)
+install(FILES aesrand/aesrand.h DESTINATION include)
 
 # Test files
 
