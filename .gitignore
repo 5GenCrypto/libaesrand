@@ -6,3 +6,4 @@ aesrand/aesrand.h
 cmake_install.cmake
 libaesrand.so
 test_aesrand
+install_manifest.txt
