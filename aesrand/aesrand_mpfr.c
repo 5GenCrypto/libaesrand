@@ -1,5 +1,4 @@
-#include "aesrand_mpfr.h"
-#include "aesrand_gmp.h"
+#include "aesrand.h"
 
 int
 mpfr_urandomb_aes(mpfr_t rop, aes_randstate_t state)

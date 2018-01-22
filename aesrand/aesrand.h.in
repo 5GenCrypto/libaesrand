@@ -10,15 +10,59 @@ extern "C" {
 #cmakedefine AESRAND_HAVE_FLINT
 #cmakedefine AESRAND_HAVE_MPFR
 
-#include <aesrand/aesrand_init.h>
-#include <aesrand/aesrand_buf.h>
-#include <aesrand/aesrand_gmp.h>
+#include <stdio.h>
+#include <openssl/evp.h>
+
+#define AESRAND_OK  0
+#define AESRAND_ERR (-1)
+
+struct _aes_randstate_struct {
+    unsigned long ctr;
+    unsigned char key[128];
+};
+
+typedef struct _aes_randstate_struct aes_randstate_t[1];
+
+#define AES_ALGORITHM EVP_aes_128_ctr()
+
+int  aes_randinit(aes_randstate_t state);
+void aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_size,
+                        char *additional, size_t additional_size);
+void aes_randclear(aes_randstate_t state);
+int  aes_randstate_fwrite(const aes_randstate_t state, FILE *fp);
+int  aes_randstate_fread(aes_randstate_t state, FILE *fp);
+int  aes_randstate_write(const aes_randstate_t state, const char *fname);
+int  aes_randstate_read(aes_randstate_t state, const char *fname);
+
+/* Takes a state and a number of *bits*, and returns a buffer with 'nbits / 8 +
+ * 1' bytes of randomness amenable for use by mpz_urandomb_aes.  'len' contains
+ * the number of *bytes* contained in the resulting buffer.
+ */
+unsigned char * random_aes(aes_randstate_t state, size_t nbits, size_t *len);
+
+#include <gmp.h>
+
+int mpz_urandomb_aes(mpz_t rop, aes_randstate_t state, mp_bitcnt_t n);
+int mpz_urandomm_aes(mpz_t rop, aes_randstate_t state, const mpz_t n);
+
 #ifdef AESRAND_HAVE_FLINT
-#include <aesrand/aesrand_flint.h>
-#endif
+
+#include <flint/fmpz_poly.h>
+#include <flint/fmpz_mod_poly.h>
+
+int fmpz_mod_poly_randtest_aes(fmpz_mod_poly_t f, aes_randstate_t state, slong len);
+int fmpz_randm_aes(fmpz_t f, aes_randstate_t state, const fmpz_t m);
+int fmpz_randbits_aes(fmpz_t out, aes_randstate_t state, const mp_bitcnt_t bits);
+
+#endif  /* AESRAND_HAVE_FLINT */
+
 #ifdef AESRAND_HAVE_MPFR
-#include <aesrand/aesrand_mpfr.h>
-#endif
+
+#include <mpfr.h>
+
+int mpfr_urandomb_aes(mpfr_t rop, aes_randstate_t state);
+
+#endif  /* AESRAND_HAVE_MPFR */
 
 #ifdef __cplusplus
 }

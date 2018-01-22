@@ -10,16 +10,6 @@ current_time(void)
     return (double) (t.tv_sec + (double) (t.tv_usec / 1000000.0));
 }
 
-static void
-print_buf(unsigned char *buf, size_t size)
-{
-    printf("0x");
-    for (size_t i = 0; i < size; ++i) {
-        printf("%02x", buf[i]);
-    }
-    printf("\n");
-}
-
 #define NITERS        1000000
 #define NITERS_SMALL    10000
 
@@ -34,15 +24,7 @@ main(void)
     if (aes_randinit(rng) == AESRAND_ERR)
         return 1;
 
-    nbits = 128;
-
-    buf = random_aes(rng, nbits, &nbytes);
-    print_buf(buf, nbytes);
-    free(buf);
-
-    buf = random_aes(rng, nbits, &nbytes);
-    print_buf(buf, nbytes);
-    free(buf);
+    nbits = (size_t) 1 << 10;
 
     printf("Testing random_aes: ");
     start = current_time();
@@ -53,7 +35,7 @@ main(void)
         free(buf);
     }
     end = current_time();
-    printf("%f s\n", end - start);
+    printf("%f s [%f μs]\n", end - start, (end - start) / NITERS * 1000000);
 
     printf("Testing mpz_urandomb_aes: ");
     start = current_time();
@@ -67,7 +49,7 @@ main(void)
         mpz_clear(rop);
     }
     end = current_time();
-    printf("%f s\n", end - start);
+    printf("%f s [%f μs]\n", end - start, (end - start) / NITERS * 1000000);
 
     printf("Testing mpz_urandomm_aes: ");
     {
@@ -82,7 +64,7 @@ main(void)
         end = current_time();
         mpz_clears(rop, n, NULL);
     }
-    printf("%f s\n", end - start);
+    printf("%f s [%f μs]\n", end - start, (end - start) / NITERS * 1000000);
 
 #ifdef AESRAND_HAVE_MPFR
     printf("Testing mpfr_urandomb_aes: ");
@@ -97,7 +79,7 @@ main(void)
         end = current_time();
         mpfr_clear(rop);
     }
-    printf("%f s\n", end - start);
+    printf("%f s [%f μs]\n", end - start, (end - start) / NITERS * 1000000);
 #endif
 
 #ifdef AESRAND_HAVE_FLINT
@@ -126,7 +108,7 @@ main(void)
         end = current_time();
         fmpz_mod_poly_clear(rop);
     }
-    printf("%f s\n", end - start);
+    printf("%f s [%f μs]\n", end - start, (end - start) / NITERS_SMALL * 1000000);
 
     printf("Testing fmpz_randbits_aes: ");
     {
@@ -140,7 +122,7 @@ main(void)
         end = current_time();
         fmpz_clear(rop);
     }
-    printf("%f s\n", end - start);
+    printf("%f s [%f μs]\n", end - start, (end - start) / NITERS * 1000000);
 
     printf("Testing fmpz_randm_aes: ");
     {
@@ -157,10 +139,10 @@ main(void)
         fmpz_clear(rop);
         fmpz_clear(n);
     }
-    printf("%f s\n", end - start);
+    printf("%f s [%f μs]\n", end - start, (end - start) / NITERS * 1000000);
 #endif
 
     aes_randclear(rng);
-    
+
     return 0;
 }

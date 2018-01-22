@@ -1,5 +1,4 @@
-#include "aesrand_flint.h"
-#include "aesrand_gmp.h"
+#include "aesrand.h"
 
 int
 fmpz_mod_poly_randtest_aes(fmpz_mod_poly_t f, aes_randstate_t state, slong len)
