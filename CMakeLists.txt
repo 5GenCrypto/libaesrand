@@ -20,18 +20,13 @@ set(aesrand_SOURCES
   )
 set(aesrand_HEADERS
   aesrand/aesrand.h
-  aesrand/aesrand_init.h
-  aesrand/aesrand_buf.h
-  aesrand/aesrand_gmp.h
   )
 
 if (AESRAND_HAVE_FLINT)
   list(APPEND aesrand_SOURCES aesrand/aesrand_flint.c)
-  list(APPEND aesrand_HEADERS aesrand/aesrand_flint.h)
 endif (AESRAND_HAVE_FLINT)
 if (AESRAND_HAVE_MPFR)
   list(APPEND aesrand_SOURCES aesrand/aesrand_mpfr.c)
-  list(APPEND aesrand_HEADERS aesrand/aesrand_mpfr.h)
 endif (AESRAND_HAVE_MPFR)
 
 add_library(aesrand SHARED ${aesrand_SOURCES})
