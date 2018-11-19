@@ -18,7 +18,7 @@ extern "C" {
 
 struct _aes_randstate_struct {
     unsigned long ctr;
-    unsigned char key[128];
+    unsigned char key[32];
 };
 
 typedef struct _aes_randstate_struct aes_randstate_t[1];

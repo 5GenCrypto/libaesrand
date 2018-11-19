@@ -39,12 +39,13 @@ aes_randinit_seedn(aes_randstate_t state, char *seed, size_t seed_len,
     unsigned char key[SHA256_DIGEST_LENGTH];
 
     state->ctr = 0;
+    memset(state->key, '\0', sizeof state->key);
     SHA256_Init(&sha256);
     SHA256_Update(&sha256, seed, seed_len);
     if (additional)
         SHA256_Update(&sha256, additional, additional_len);
     SHA256_Final(key, &sha256);
-    memcpy(state->key, key, sizeof state->key);
+    memcpy(state->key, key, (SHA256_DIGEST_LENGTH < sizeof state->key) ? SHA256_DIGEST_LENGTH : sizeof state->key);
 }
 
 void
