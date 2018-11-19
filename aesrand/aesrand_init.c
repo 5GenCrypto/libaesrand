@@ -16,19 +16,14 @@ int
 aes_randinit(aes_randstate_t rng)
 {
     int ret = AESRAND_ERR;
+    unsigned char seed[16];
     int file;
 
-    if ((file = open(RANDFILE, O_RDONLY)) == -1) {
-        fprintf(stderr, "Error opening %s\n", RANDFILE);
+    if ((file = open(RANDFILE, O_RDONLY)) == -1)
         return AESRAND_ERR;
-    } else {
-        unsigned char seed[16];
-        if (read(file, seed, 16) == -1) {
-            fprintf(stderr, "Error reading from %s\n", RANDFILE);
-            goto cleanup;
-        }
-        aes_randinit_seedn(rng, (char *) seed, 16, NULL, 0);
-    }
+    if (read(file, seed, 16) == -1)
+        goto cleanup;
+    aes_randinit_seedn(rng, (char *) seed, 16, NULL, 0);
     ret = AESRAND_OK;
 cleanup:
     if (file != -1)
